@@ -1,0 +1,2 @@
+Uses the aXMLRPC library https://github.com/timroes/aXMLRPC, compiled and tested with v1.7.2
+Also uses apache commons ( commons-cli-1.2.jar )

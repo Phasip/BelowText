@@ -44,7 +44,7 @@ public class OpenSubtitleAPI {
         if (hash != null)
             hm.put("moviehash",hash);
         if (size != null)
-            hm.put("moviebytesize",size);
+            hm.put("moviebytesize",size.toString());
         if (tag != null)
             hm.put("tag",tag);
         if (query != null)

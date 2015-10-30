@@ -86,10 +86,12 @@ public class Main {
         try {
             String str = f.getName();
             int last = str.lastIndexOf(".");
-
-            String ext = str.substring(last);
             String newExt = ".srt";
-            String fileStart = str.substring(0,last);
+            String fileStart = str;
+            
+            if (last != -1)
+                fileStart = str.substring(0,last);
+            
             File newFile = new File(f.getParent(),fileStart+newExt);
             if (!newFile.exists()) {
                 newFile.createNewFile();

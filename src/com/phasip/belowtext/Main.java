@@ -27,6 +27,7 @@ public class Main {
             System.err.println("Usage: java -jar BelowText.jar [-d] [-c result_limit] [-l lang] movie file name");
             System.err.println("-c result_limit\tDefines the max number of results to retrieve (default: 3)");
             System.err.println("-d print debug stuff");
+            System.err.println("-s do not download if subtitles exists");
             //System.err.println("-s\t\tUse console output instead of gui");
             System.err.println("-l language\tDefine language to download subtitle for, \\can be defined multiple times for multiple languages. (default: eng)");
             System.exit(-1);
@@ -49,6 +50,10 @@ public class Main {
         long size = f.length();
         String filename = f.getName();
         String[] languages = settings.getLanguages();
+        if ( settings.shouldSkipIfSubtitlesExist() && genSubFile(f,0).exists()) {
+            System.err.println("Subtitle exists already, skipping.");
+            System.exit(-4);
+        }
         OpenSubtitleAPI api = new OpenSubtitleAPI();
         Map<String,Object> results[] = api.search(languages,hash,size,filename,settings.getCount());
         if (results != null)
@@ -63,6 +68,7 @@ public class Main {
         for (int i = 0; i < results.length; i++) {
             Map<String, Object> result = results[i];
             String link = (String)result.get("SubDownloadLink");
+
             File outFile = genSubFile(movieFile);
             if (outFile == null) {
                 System.err.println("Fail to generate next subtitle name!");
@@ -74,6 +80,23 @@ public class Main {
             }
         }
     }
+    private File genSubFile(File f,int idx) {
+        String str = f.getName();
+        int last = str.lastIndexOf(".");
+        String newExt = ".srt";
+        String fileStart = str;
+
+        if (last != -1)
+            fileStart = str.substring(0,last);
+
+        File newFile = null;
+        if (idx < 1) {
+            newFile = new File(f.getParent(), fileStart + newExt);
+        } else {
+            newFile = new File(f.getParent(), fileStart + "." + idx + newExt);
+        }
+        return newFile;
+    }
 
     /**
      * Creates a file that will be automatically found by VLC
@@ -84,21 +107,9 @@ public class Main {
      */
     private File genSubFile(File f) {
         try {
-            String str = f.getName();
-            int last = str.lastIndexOf(".");
-            String newExt = ".srt";
-            String fileStart = str;
-            
-            if (last != -1)
-                fileStart = str.substring(0,last);
-            
-            File newFile = new File(f.getParent(),fileStart+newExt);
-            if (!newFile.exists()) {
-                newFile.createNewFile();
-                return newFile;
-            }
-            for (int i = 1; i < 1000; i++) {
-                newFile = new File(f.getParent(),fileStart+"." + i +newExt);
+            File newFile;
+            for (int i = 0; i < 1000; i++) {
+                newFile = genSubFile(f,i);
                 if (!newFile.exists()) {
                     newFile.createNewFile();
                     return newFile;

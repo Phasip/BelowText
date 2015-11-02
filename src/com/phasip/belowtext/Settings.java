@@ -14,9 +14,11 @@ public class Settings {
     public static String LANGUAGE_FLAG = "-l";
     public static String NO_FLAGS = "--";
     public static String DEBUG_FLAG = "-d";
+    public static String SKIP_EXISTING  = "-s";
     private boolean debug = false;
     private String[] languages;
     private int count = 3;
+    private boolean skip_if_existing = false;
     private String moviefile = null;
     private static Settings singleton;
 
@@ -59,13 +61,15 @@ public class Settings {
                 }
             } else if (arg.equals(LANGUAGE_FLAG)) {
                 if (!hasNext) throw new BadParametersException("Language flag without parameter");
-                String param = args[i+1];
+                String param = args[++i];
                 languages.add(param);
             } else if (arg.equals(DEBUG_FLAG)) {
                 debug = true;
             } else if (arg.equals(NO_FLAGS)) {
                 i++;
                 break;
+            } else if (arg.equals(SKIP_EXISTING)) {
+                skip_if_existing = true;
             } else {
                 break;
             }
@@ -83,7 +87,7 @@ public class Settings {
         return languages;
     }
 
-
+    public boolean shouldSkipIfSubtitlesExist() {return skip_if_existing; }
     public int getCount() {
         return count;
     }

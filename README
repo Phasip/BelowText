@@ -1,2 +1,9 @@
 Uses the aXMLRPC library https://github.com/timroes/aXMLRPC, compiled and tested with v1.7.2
 Also uses apache commons ( commons-cli-1.2.jar )
+
+# Building
+gradle wrapper --gradle-version=3.3
+./gradlew assemble
+
+# Running
+java -jar build/libs/BelowText.jar

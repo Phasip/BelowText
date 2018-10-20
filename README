@@ -2,7 +2,7 @@ Uses the aXMLRPC library https://github.com/timroes/aXMLRPC, compiled and tested
 Also uses apache commons ( commons-cli-1.2.jar )
 
 # Building
-gradle wrapper --gradle-version=3.3
+gradle wrapper --gradle-version=4.9
 ./gradlew assemble
 
 # Running
